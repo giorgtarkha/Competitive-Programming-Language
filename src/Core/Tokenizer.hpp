@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Error.hpp"
+#include "Utils.hpp"
 
 enum TOKENIZE_RESULT_STATUS 
 {
@@ -19,6 +20,7 @@ typedef struct
 	std::vector<ERROR> errors;
 } TOKENIZE_RESULT;
 
-TOKENIZE_RESULT tokenize(std::string& code);
+TOKENIZE_RESULT tokenize(const std::string& code);
+void print_tokens(const std::vector<std::string>& tokens);
 
 #endif 

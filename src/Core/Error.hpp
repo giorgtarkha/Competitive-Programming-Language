@@ -11,6 +11,6 @@ typedef struct
 	std::string message;
 } ERROR;
 
-void print_errors(std::vector<ERROR>& errors);
+void print_errors(const std::vector<ERROR>& errors);
 
 #endif
