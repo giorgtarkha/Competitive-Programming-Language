@@ -1,10 +1,11 @@
 #include "Tokenizer.hpp" 
 
-bool check_for_single_line_comment_start(int& index, const std::string& code, bool& inside_single_line_comment)
+bool check_for_single_line_comment_start(uint& index, uint& column, const std::string& code, bool& inside_single_line_comment)
 {	
 	if (code[index] == '/' && index + 1 < code.length() && code[index + 1] == '/')
 	{
 		index += 2;
+		column += 2;
 		inside_single_line_comment = true;
 		return true;
 	}
@@ -12,19 +13,21 @@ bool check_for_single_line_comment_start(int& index, const std::string& code, bo
 	return false;
 }
 
-void check_for_single_line_comment_end(int& index, const std::string& code, bool& inside_single_line_comment)
+void check_for_single_line_comment_end(uint& index, uint& column, const std::string& code, bool& inside_single_line_comment)
 {
 	if (code[index++] == '\n')
 	{
 		inside_single_line_comment = false;
-	}		
+	}
+	column++;		
 }
 
-bool check_for_multiline_comment_start(int& index, const std::string& code, bool& inside_multiline_comment)
+bool check_for_multiline_comment_start(uint& index, uint& column, const std::string& code, bool& inside_multiline_comment)
 {                                               
 	if (code[index] == '/' && index + 1 < code.length() && code[index + 1] == '*')
 	{
 		index += 2;
+		column += 2;
 		inside_multiline_comment = true;
 		return true;
 	}     
@@ -32,24 +35,27 @@ bool check_for_multiline_comment_start(int& index, const std::string& code, bool
 	return false;
 }
 
-void check_for_multiline_comment_end(int & index, const std::string& code, bool& inside_multiline_comment)
+void check_for_multiline_comment_end(uint& index, uint& column, const std::string& code, bool& inside_multiline_comment)
 {
 	if (code[index] == '*' && index + 1 < code.length() && code[index + 1] == '/')
 	{
 		index += 2;
+		column += 2;
 		inside_multiline_comment = false;
 	}
 	else
 	{
+		column++;
 		index++;
 	}
 }
 
-bool check_for_string_start(int& index, const std::string& code, std::string& current_token, bool& inside_string)
+bool check_for_string_start(uint& index, uint& column, const std::string& code, std::string& current_token, bool& inside_string)
 {
     if (code[index] == '"')
     {
 		current_token += code[index++];
+		column++;
 		inside_string = true;
 		return true;
     }
@@ -57,7 +63,7 @@ bool check_for_string_start(int& index, const std::string& code, std::string& cu
     return false;
 }
 
-void check_for_string_end(int& index, const std::string& code, std::string& current_token, bool& inside_string)
+void check_for_string_end(uint& index, uint& column, const std::string& code, std::string& current_token, bool& inside_string)
 {
 	if (code[index] == '"')
 	{
@@ -67,13 +73,15 @@ void check_for_string_end(int& index, const std::string& code, std::string& curr
 		}	
 	}
 	current_token += code[index++];
+	column++;
 }
 
-bool check_for_char_start(int& index, const std::string& code, std::string& current_token, bool& inside_char)
+bool check_for_char_start(uint& index, uint& column, const std::string& code, std::string& current_token, bool& inside_char)
 {
     if (code[index] == '\'')
     {
 		current_token += code[index++];
+		column++;
 		inside_char = true;
 		return true;
     }
@@ -81,7 +89,7 @@ bool check_for_char_start(int& index, const std::string& code, std::string& curr
     return false;	
 }
 
-void check_for_char_end(int& index, const std::string& code, std::string& current_token, bool& inside_char)
+void check_for_char_end(uint& index, uint& column, const std::string& code, std::string& current_token, bool& inside_char)
 {
 	if (code[index] == '\'')
 	{
@@ -91,12 +99,23 @@ void check_for_char_end(int& index, const std::string& code, std::string& curren
 		}	
 	}
 	current_token += code[index++];
+	column++;
 }
 
-bool check_for_whitespace(int& index, const std::string& code)
+//TODO Calculate line/column increments while using different spaces correctly
+bool check_for_whitespace(uint& index, uint& line, uint& column, const std::string& code)
 {
 	if (is_space(code[index]))
 	{
+		if (code[index] == '\n')
+		{
+			line++;
+			column = 1;
+		}
+		else
+		{
+			column++;
+		}
 		index++;
 		return true;
 	}	
@@ -106,72 +125,124 @@ bool check_for_whitespace(int& index, const std::string& code)
 
 TOKENIZE_RESULT tokenize(const std::string& code)
 {
-	TOKENIZE_RESULT result = {
-		SUCCESS,
-		{},
-		{}
-	};
-	int index = 0;
-	bool inside_single_line_comment = false;
-	bool inside_multiline_comment = false;
-	bool inside_string = false;
-	bool inside_char = false;
-	std::string current_token = "";                                                    
+	TOKENIZE_RESULT result = {{}};
+	std::string current_token = "";
+	uint line = 1, column = 1, current_token_line = 1, current_token_column = 1,
+		 index = 0;
+	bool inside_single_line_comment = false,
+		 inside_multiline_comment = false,
+		 inside_string = false,
+		 inside_char = false;                                                    
 	while (index < code.length())
 	{
 		if (inside_single_line_comment)
 		{
-			check_for_single_line_comment_end(index, code, inside_single_line_comment);
+			check_for_single_line_comment_end(index, column, code, inside_single_line_comment);
 			continue;
 		}
 		if (inside_multiline_comment)
 		{
-			check_for_multiline_comment_end(index, code, inside_multiline_comment);
+			check_for_multiline_comment_end(index, column, code, inside_multiline_comment);
 			continue;
 		}
 		if (inside_string)
 		{
-			check_for_string_end(index, code, current_token, inside_string);
+			check_for_string_end(index, column, code, current_token, inside_string);
 			if (!inside_string)
 			{
-				result.tokens.push_back(current_token);
-				current_token = "";			
+				result.tokens.push_back({current_token, current_token_line, current_token_column});
+				current_token = "";
+				current_token_line = line;
+				current_token_column = column;			
 			}
 			continue;
 		}
 		if (inside_char)
 		{
-			check_for_char_end(index, code, current_token, inside_char);
+			check_for_char_end(index, column, code, current_token, inside_char);
 			if (!inside_char)
 			{
-				result.tokens.push_back(current_token);
+				result.tokens.push_back({current_token, current_token_line, current_token_column});
 				current_token = "";
+				current_token_line = line;
+				current_token_column = column;
 			}
 			continue;
 		}
 		
-		if (check_for_single_line_comment_start(index, code, inside_single_line_comment)) continue;
-		if (check_for_multiline_comment_start(index, code, inside_multiline_comment)) continue;
-		if (check_for_string_start(index, code, current_token, inside_string)) continue;
-		if (check_for_char_start(index, code, current_token, inside_char)) continue;
-		if (check_for_whitespace(index, code)) 
+		if (check_for_single_line_comment_start(index, column, code, inside_single_line_comment)) continue;
+		if (check_for_multiline_comment_start(index, column, code, inside_multiline_comment)) continue;
+		if (check_for_string_start(index, column, code, current_token, inside_string)) continue;
+		if (check_for_char_start(index, column, code, current_token, inside_char)) continue;
+		if (check_for_whitespace(index, line, column, code)) 
 		{
 			if (current_token.length() > 0)
 			{
-				result.tokens.push_back(current_token);
+				result.tokens.push_back({current_token, current_token_line, current_token_column});
+				current_token = "";
 			}
+			current_token_line = line;
+			current_token_column = column;
 			continue;
 		}
-		index++;
+		if (is_splittable(code[index]))
+		{
+			if (current_token.length() > 0)
+			{
+				result.tokens.push_back({current_token, current_token_line, current_token_column});
+				current_token = "";
+			}
+			current_token_line = line;
+			current_token_column = column++;
+			result.tokens.push_back({std::string(1, code[index++]), current_token_line, current_token_column});
+			continue;
+		}
+		if (current_token.length() == 0)
+		{
+			current_token_line = line;
+			current_token_column = column;
+		}
+		current_token += code[index++];
+		column++;
+	}
+	if (current_token.length() > 0)
+	{
+		result.tokens.push_back({current_token, current_token_line, current_token_column});
 	}
 	
 	return result;
 }
 
-void print_tokens(const std::vector<std::string>& tokens)
+void print_tokens(const std::vector<TOKEN>& tokens)
 {
 	for (int i = 0; i < tokens.size(); i++)
 	{
-		printf("%s%c %c", tokens[i].c_str(), i < tokens.size() - 1 ? ',' : 0, i % 5 == 4 ? '\n' : 0);
+		
+		printf("L%d C%d \"%s\"%c %c", tokens[i].line, tokens[i].column, tokens[i].token.c_str(), i < tokens.size() - 1 ? ',' : 0, i % 5 == 4 ? '\n' : 0);
+	}
+}
+
+void print_tokens_by_lines(const std::vector<TOKEN>& tokens)
+{
+	int current_line = 0;
+	bool printed_line = false, printed_first = false;
+	for (int i = 0; i < tokens.size(); i++)
+	{
+		if (tokens[i].line != current_line)
+		{
+			current_line = tokens[i].line;
+			printed_line = false;
+			if (printed_first)
+			{
+				printf("\n");
+			}
+			printed_first = true;	
+		}	
+		if (!printed_line)
+		{                                       
+			printf("L%d ", current_line);				
+			printed_line = true;
+		}
+		printf("| C%d, \"%s\" ", tokens[i].column, tokens[i].token.c_str());
 	}
 }

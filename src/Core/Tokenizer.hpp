@@ -7,20 +7,20 @@
 #include "Error.hpp"
 #include "Utils.hpp"
 
-enum TOKENIZE_RESULT_STATUS 
+typedef struct
 {
-	SUCCESS,
-	FAIL
-};
+	std::string token;
+	uint line;
+	uint column;
+} TOKEN;
 
 typedef struct
 {
-	TOKENIZE_RESULT_STATUS status;
-	std::vector<std::string> tokens;
-	std::vector<ERROR> errors;
+	std::vector<TOKEN> tokens;
 } TOKENIZE_RESULT;
 
 TOKENIZE_RESULT tokenize(const std::string& code);
-void print_tokens(const std::vector<std::string>& tokens);
+void print_tokens(const std::vector<TOKEN>& tokens);
+void print_tokens_by_lines(const std::vector<TOKEN>& tokens);
 
 #endif 

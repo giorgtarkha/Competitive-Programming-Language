@@ -6,18 +6,14 @@
 int main(int argc, char **argv)
 {
 		
-	std::string code = "\"test1\" //pirveli \n /*pirvelihehe \n meore \n meorehehe*/ \"test\" \n \"aaaaa\" 'test'";
+	std::string code = "void main() {\n"
+	 "	int x = 0;\n"
+	 "	int y = 1;\n"
+	 "	print(x + y);\n"
+	 "}\n";	
 	printf("%s\n", code.c_str());
 	TOKENIZE_RESULT tokenize_result = tokenize(code);
-	if (tokenize_result.status == FAIL) 
-	{
-		print_errors(tokenize_result.errors);
-		exit(-1);
-	}
-	else
-	{
-		print_tokens(tokenize_result.tokens);
-	}
+	print_tokens_by_lines(tokenize_result.tokens);
 
 	return 0;
 }
