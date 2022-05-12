@@ -6,13 +6,7 @@
 
 #include "Error.hpp"
 #include "Utils.hpp"
-
-typedef struct
-{
-	std::string token;
-	uint line;
-	uint column;
-} TOKEN;
+#include "Token.hpp"
 
 typedef struct
 {

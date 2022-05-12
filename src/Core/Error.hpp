@@ -4,10 +4,12 @@
 #include <string>
 #include <vector>
 
+#include "Utils.hpp"
+
 typedef struct
 {
-	int line;
-	int column;
+	uint line;
+	uint column;
 	std::string message;
 } ERROR;
 
