@@ -14,7 +14,5 @@ typedef struct
 } TOKENIZE_RESULT;
 
 TOKENIZE_RESULT tokenize(const std::string& code);
-void print_tokens(const std::vector<TOKEN>& tokens);
-void print_tokens_by_lines(const std::vector<TOKEN>& tokens);
 
 #endif 
