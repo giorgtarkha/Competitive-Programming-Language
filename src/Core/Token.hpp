@@ -26,5 +26,7 @@ typedef struct
 
 void print_tokens(const std::vector<TOKEN>& tokens);
 void print_tokens_by_lines(const std::vector<TOKEN>& tokens);
+void print_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_tokens);
+void print_processed_tokens_by_lines(const std::vector<PROCESSED_TOKEN>& processed_tokens);
 
 #endif

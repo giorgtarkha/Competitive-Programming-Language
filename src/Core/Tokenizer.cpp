@@ -123,6 +123,7 @@ bool check_for_whitespace(uint& index, uint& line, uint& column, const std::stri
 	return false;
 }
 
+//TODO Check that current token is always appended when splitting 
 TOKENIZE_RESULT tokenize(const std::string& code)
 {
 	TOKENIZE_RESULT result = {{}};
