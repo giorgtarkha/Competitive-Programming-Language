@@ -135,17 +135,6 @@ TOKENIZE_RESULT tokenize(const std::string& code)
 		 inside_char = false;                                                    
 	while (index < code.length())
 	{
-		if (current_token.length() > 0 && 
-			!inside_single_line_comment && !inside_multiline_comment && !inside_string && !inside_char &&
-			(code[index] <= 'a' || code[index] >= 'z') &&
-			(code[index] <= 'A' || code[index] >= 'Z') &&
-			code[index] != '_')
-		{
-		 	result.tokens.push_back({current_token, current_token_line, current_token_column});
-			current_token = "";
-			current_token_line = line;
-			current_token_column = column;
-		}
 		if (inside_single_line_comment)
 		{
 			check_for_single_line_comment_end(index, column, code, inside_single_line_comment);

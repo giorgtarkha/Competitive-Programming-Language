@@ -2,11 +2,35 @@
 
 LEX_RESULT process_tokens(const std::vector<TOKEN>& tokens)
 {
+	LEX_RESULT result = {	
+		LEX_STATUS::SUCCESS,
+		{},
+		{}
+	};
+	bool with_errors = false;		
 	for (const TOKEN& token : tokens)
 	{
-		
+		TOKEN_TYPE token_type = get_token_type(token.value);
+		if (token_type == TOKEN_TYPE::TK_UNKNOWN)
+		{
+			result.status = FAIL;
+			result.errors.push_back({
+				token.line,
+				token.column,
+				"Unknown identifier[" + token.value + "]"
+			});
+			with_errors = true;
+		}
+		else if (!with_errors)
+		{	
+			result.processed_tokens.push_back({
+				token,
+				token_type
+			});
+		}
+	
 	}
-	return {};	
+	return result;	
 }
 
 LEX_RESULT merge_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_tokens)
@@ -17,7 +41,7 @@ LEX_RESULT merge_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_
 LEX_RESULT lex(const std::vector<TOKEN>& tokens)
 {	
 	LEX_RESULT processing_result = process_tokens(tokens);
-	if (processing_result.status == FAIL) 
+	if (processing_result.status == LEX_STATUS::FAIL) 
 	{
 		return processing_result;
 	}	

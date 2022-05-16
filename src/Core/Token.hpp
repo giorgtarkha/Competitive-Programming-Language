@@ -62,9 +62,12 @@ enum TOKEN_TYPE
 	SC_LBRACKET,
 	SC_RBRACKET,
 	SC_LBRACE,
-	SC_RPBRACE,
+	SC_RBRACE,
 	SP_COMMA,
-	SP_SEMICOLON	
+	SP_SEMICOLON,
+	TK_LITERAL,
+	TK_IDENTIFIER,
+	TK_UNKNOWN
 };
 
 typedef struct
@@ -80,6 +83,7 @@ typedef struct
 	TOKEN_TYPE type;	
 } PROCESSED_TOKEN;
 
+TOKEN_TYPE get_token_type(const std::string& token_type_str);
 void print_tokens(const std::vector<TOKEN>& tokens);
 void print_tokens_by_lines(const std::vector<TOKEN>& tokens);
 void print_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_tokens);

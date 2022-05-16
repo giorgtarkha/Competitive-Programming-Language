@@ -21,4 +21,20 @@ inline bool is_splittable(const char c)
 		   c == ',' || c == ';';
 }
 
+inline bool is_valid_identifier_char(const char c)
+{
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_';
+}
+
+inline bool is_valid_literal_char(const char c)
+{
+	return (c >= '0' && c <= '9') || c == '_'; 
+}
+
+inline bool is_digit(const char c)
+{
+	return c >= '0' && c <= '9';
+}
+
+
 #endif
