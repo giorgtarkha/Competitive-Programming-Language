@@ -35,7 +35,12 @@ LEX_RESULT process_tokens(const std::vector<TOKEN>& tokens)
 
 LEX_RESULT merge_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_tokens)
 {
-	return {};
+	LEX_RESULT result = {
+		LEX_STATUS::SUCCESS,
+		processed_tokens,
+		{}
+	};
+	return result;
 }
 
 LEX_RESULT lex(const std::vector<TOKEN>& tokens)

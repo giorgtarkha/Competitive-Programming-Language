@@ -90,7 +90,9 @@ void print_tokens(const std::vector<TOKEN>& tokens)
 {
 	for (int i = 0; i < tokens.size(); i++)
 	{		
-		printf("L%d C%d \"%s\"%c %c", tokens[i].line, tokens[i].column, tokens[i].value.c_str(), i < tokens.size() - 1 ? ',' : 0, i % 5 == 4 ? '\n' : 0);
+		printf("L%d C%d \"%s\"%c %c",
+			tokens[i].line, tokens[i].column, 
+			tokens[i].value.c_str(), i < tokens.size() - 1 ? ',' : 0, i % 5 == 4 ? '\n' : 0);
 	}
 }
 
@@ -119,12 +121,59 @@ void print_tokens_by_lines(const std::vector<TOKEN>& tokens)
 	}
 }
 
-//TODO implement
-void print_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_tokens)
+void print_tokens_line_by_line(const std::vector<TOKEN>& tokens)
 {
+	for (const TOKEN& token : tokens)
+	{
+		printf("LINE[%d], COLUMN[%d], VALUE[%s]\n", 
+			token.line, token.column, token.value.c_str());
+	}
 }
 
-//TODO implement
+void print_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_tokens)
+{
+	for (int i = 0; i < processed_tokens.size(); i++)
+	{		
+		printf("L%d C%d TT[%s] \"%s\"%c %c", 
+			processed_tokens[i].token.line, processed_tokens[i].token.column, 
+			token_type_map[processed_tokens[i].type].name.c_str(), 
+			processed_tokens[i].token.value.c_str(), i < processed_tokens.size() - 1 ? ',' : 0, i % 5 == 4 ? '\n' : 0);
+	}
+}
+
 void print_processed_tokens_by_lines(const std::vector<PROCESSED_TOKEN>& processed_tokens)
 {
+	int current_line = 0;
+	bool printed_line = false, printed_first = false;
+	for (int i = 0; i < processed_tokens.size(); i++)
+	{
+		if (processed_tokens[i].token.line != current_line)
+		{
+			current_line = processed_tokens[i].token.line;
+			printed_line = false;
+			if (printed_first)
+			{
+				printf("\n");
+			}
+			printed_first = true;	
+		}	
+		if (!printed_line)
+		{                                       
+			printf("L%d ", current_line);				
+			printed_line = true;
+		}
+		printf("| C%d, TT[%s] \"%s\" ", 
+			processed_tokens[i].token.column, token_type_map[processed_tokens[i].type].name.c_str(), processed_tokens[i].token.value.c_str());
+	}
+}
+
+void print_processed_tokens_line_by_line(const std::vector<PROCESSED_TOKEN>& processed_tokens)
+{
+	for (const PROCESSED_TOKEN& processed_token : processed_tokens)
+	{
+		printf("LINE[%d], COLUMN[%d], TOKEN_TYPE[%s], VALUE[%s]\n", 
+			processed_token.token.line, processed_token.token.column,
+			token_type_map[processed_token.type].name.c_str(),
+			processed_token.token.value.c_str());
+	}
 }

@@ -8,18 +8,20 @@ int main(int argc, char **argv)
 {
 		
 	std::string code = "void main() {\n"
-	 "	int 5x = 0;\n"
+	 "	int x = 0;\n"
 	 "	int y = 1;\n"
 	 "	print(x + y);\n"
 	 "}\n";	
 	printf("%s\n", code.c_str());
 	TOKENIZE_RESULT tokenize_result = tokenize(code);
-	print_tokens_by_lines(tokenize_result.tokens);
+	print_tokens_line_by_line(tokenize_result.tokens);
 	LEX_RESULT lex_result = lex(tokenize_result.tokens);
 	if (lex_result.status == LEX_STATUS::FAIL)
 	{
 		print_errors(lex_result.errors);
+		exit(-1);
 	}
+	print_processed_tokens_line_by_line(lex_result.processed_tokens);
 
 	return 0;
 }
