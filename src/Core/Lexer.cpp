@@ -11,6 +11,7 @@ LEX_RESULT process_tokens(const std::vector<TOKEN>& tokens)
 	for (const TOKEN& token : tokens)
 	{
 		TOKEN_TYPE token_type = get_token_type(token.value);
+		TOKEN_GROUP token_group = get_token_group(token_type);
 		if (token_type == TOKEN_TYPE::TK_UNKNOWN)
 		{
 			result.status = FAIL;
@@ -25,7 +26,8 @@ LEX_RESULT process_tokens(const std::vector<TOKEN>& tokens)
 		{	
 			result.processed_tokens.push_back({
 				token,
-				token_type
+				token_type,
+				token_group
 			});
 		}
 	
@@ -40,6 +42,11 @@ LEX_RESULT merge_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_
 		processed_tokens,
 		{}
 	};
+	int index = 0;
+	while (index < processed_tokens.size())
+	{
+		index++;
+	}
 	return result;
 }
 

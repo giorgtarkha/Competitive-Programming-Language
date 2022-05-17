@@ -18,6 +18,7 @@ enum TOKEN_TYPE
 	KW_TRUE,
 	KW_FALSE,
 	KW_NULL,
+	KW_VOID,
 	DT_INT,
 	DT_LONG,
 	DT_BIGINT,
@@ -26,6 +27,15 @@ enum TOKEN_TYPE
 	DT_STRING,
 	DT_FLOAT,
 	DT_ARRAY,
+	DT_STACK,
+	DT_QUEUE,
+	DT_DEQUE,
+	DT_SET,
+	DT_HASHSET,
+	DT_MULTISET,
+	DT_MAP,
+	DT_HASHMAP,
+	DT_BITS,
 	OP_ASSIGN,
 	OP_ADD,
 	OP_SUBTRACT,
@@ -71,10 +81,26 @@ enum TOKEN_TYPE
 	TK_UNKNOWN
 };
 
+enum TOKEN_GROUP
+{
+	TG_KEYWORD,
+	TG_DATATYPE,
+	TG_OPERATOR,
+	TG_SCOPE,
+	TG_SEPARATOR,
+	TG_TOKEN,
+	TG_UNKNOWN
+};
+
 typedef struct
 {
 	std::string name;
 } TOKEN_TYPE_DATA;
+
+typedef struct 
+{
+	std::string name;
+} TOKEN_GROUP_DATA;
 
 static std::unordered_map<TOKEN_TYPE, TOKEN_TYPE_DATA> token_type_map = {
 	{KW_IF, {"KW_IF"}},
@@ -86,6 +112,7 @@ static std::unordered_map<TOKEN_TYPE, TOKEN_TYPE_DATA> token_type_map = {
 	{KW_TRUE, {"KW_TRUE"}},
 	{KW_FALSE, {"KW_FALSE"}},
 	{KW_NULL, {"KW_NULL"}},
+	{KW_VOID, {"KW_VOID"}},
 	{DT_INT, {"DT_INT"}},
 	{DT_LONG, {"DT_LONG"}},
 	{DT_BIGINT, {"DT_BIGINT"}},
@@ -94,6 +121,15 @@ static std::unordered_map<TOKEN_TYPE, TOKEN_TYPE_DATA> token_type_map = {
 	{DT_STRING, {"DT_STRING"}},
 	{DT_FLOAT, {"DT_FLOAT"}},
 	{DT_ARRAY, {"DT_ARRAY"}},
+	{DT_STACK, {"DT_STACK"}},
+	{DT_QUEUE, {"DT_QUEUE"}},
+	{DT_DEQUE, {"DT_DEQUE"}},
+	{DT_SET, {"DT_SET"}},
+	{DT_HASHSET, {"DT_HASHSET"}},
+	{DT_MULTISET, {"DT_MULTISET"}},
+	{DT_MAP, {"DT_MAP"}},
+	{DT_HASHMAP, {"DT_HASHMAP"}},
+	{DT_BITS, {"DT_BITS"}},
 	{OP_ASSIGN, {"OP_ASSIGN"}},
 	{OP_ADD, {"OP_ADD"}},
 	{OP_SUBTRACT, {"OP_SUBTRACT"}},
@@ -139,6 +175,16 @@ static std::unordered_map<TOKEN_TYPE, TOKEN_TYPE_DATA> token_type_map = {
 	{TK_UNKNOWN, {"TK_UNKNOWN"}}
 };
 
+static std::unordered_map<TOKEN_GROUP, TOKEN_GROUP_DATA> token_group_map = {
+	{TG_KEYWORD, {"TG_KEYWORD"}},
+	{TG_DATATYPE, {"TG_DATATYPE"}},
+	{TG_OPERATOR, {"TG_OPERATOR"}},
+	{TG_SCOPE, {"TG_SCOPE"}},
+	{TG_SEPARATOR, {"TG_SEPARATOR"}},
+	{TG_TOKEN, {"TG_TOKEN"}},
+	{TG_UNKNOWN, {"TG_UNKNOWN"}}
+};
+
 typedef struct
 {
 	std::string value;
@@ -149,10 +195,12 @@ typedef struct
 typedef struct
 {
 	TOKEN token;
-	TOKEN_TYPE type;	
+	TOKEN_TYPE type;
+	TOKEN_GROUP group;	
 } PROCESSED_TOKEN;
 
 TOKEN_TYPE get_token_type(const std::string& token_type_str);
+TOKEN_GROUP get_token_group(const TOKEN_TYPE token_type);
 void print_tokens(const std::vector<TOKEN>& tokens);
 void print_tokens_by_lines(const std::vector<TOKEN>& tokens);
 void print_tokens_line_by_line(const std::vector<TOKEN>& tokens);
