@@ -194,7 +194,9 @@ typedef struct
 
 typedef struct
 {
-	TOKEN token;
+	std::string value;
+	uint line;
+	uint column;
 	TOKEN_TYPE type;
 	TOKEN_GROUP group;	
 } PROCESSED_TOKEN;

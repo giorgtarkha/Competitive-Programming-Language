@@ -25,7 +25,9 @@ LEX_RESULT process_tokens(const std::vector<TOKEN>& tokens)
 		else if (!with_errors)
 		{	
 			result.processed_tokens.push_back({
-				token,
+				token.value,
+				token.line,
+				token.column,
 				token_type,
 				token_group
 			});
@@ -39,13 +41,57 @@ LEX_RESULT merge_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_
 {
 	LEX_RESULT result = {
 		LEX_STATUS::SUCCESS,
-		processed_tokens,
+		{},
 		{}
 	};
+	bool with_errors = false;
 	int index = 0;
 	while (index < processed_tokens.size())
 	{
-		index++;
+		const PROCESSED_TOKEN processed_token = processed_tokens[index];
+		if (processed_token.group == TOKEN_GROUP::TG_OPERATOR) 
+		{
+			int last_operator_index = index + 1;
+			std::string current_operator = processed_token.value;
+			while (last_operator_index < processed_tokens.size())
+			{
+				const PROCESSED_TOKEN next_processed_token = processed_tokens[last_operator_index];
+				if (next_processed_token.group != TOKEN_GROUP::TG_OPERATOR || next_processed_token.type == TOKEN_TYPE::OP_NOT) break;
+				current_operator += next_processed_token.value;
+				last_operator_index++;
+			}
+			index = last_operator_index;
+			TOKEN_TYPE token_type = get_token_type(current_operator);
+			TOKEN_GROUP token_group = get_token_group(token_type);
+			if (token_type == TOKEN_TYPE::TK_UNKNOWN)
+			{
+				result.status = FAIL;
+				result.errors.push_back({
+					processed_token.line,
+					processed_token.column,
+					"Unknown identifier[" + current_operator + "]"
+				});
+				with_errors = true;
+			}
+			else if (!with_errors)
+			{
+				result.processed_tokens.push_back({
+					current_operator,
+					processed_token.line,
+					processed_token.column,
+					token_type,
+					token_group	
+				});
+			}
+		}
+		else
+		{
+			if (!with_errors)
+			{
+				result.processed_tokens.push_back(processed_token);
+			}
+			index++;
+		}
 	}
 	return result;
 }

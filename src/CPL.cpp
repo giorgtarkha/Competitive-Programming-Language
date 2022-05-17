@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 {
 		
 	std::string code = "void main() {\n"
-	 "	int x = 0;\n"
+	 "	int x += 0;\n"
 	 "	int y = 1;\n"
 	 "	print(x + y);\n"
 	 "}\n";	

@@ -219,10 +219,10 @@ void print_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_tokens
 	for (int i = 0; i < processed_tokens.size(); i++)
 	{		
 		printf("L%d C%d TT[%s] TG[%s] \"%s\"%c %c", 
-			processed_tokens[i].token.line, processed_tokens[i].token.column, 
+			processed_tokens[i].line, processed_tokens[i].column, 
 			token_type_map[processed_tokens[i].type].name.c_str(), 
 			token_group_map[processed_tokens[i].group].name.c_str(),
-			processed_tokens[i].token.value.c_str(), i < processed_tokens.size() - 1 ? ',' : 0, i % 5 == 4 ? '\n' : 0);
+			processed_tokens[i].value.c_str(), i < processed_tokens.size() - 1 ? ',' : 0, i % 5 == 4 ? '\n' : 0);
 	}
 }
 
@@ -232,9 +232,9 @@ void print_processed_tokens_by_lines(const std::vector<PROCESSED_TOKEN>& process
 	bool printed_line = false, printed_first = false;
 	for (int i = 0; i < processed_tokens.size(); i++)
 	{
-		if (processed_tokens[i].token.line != current_line)
+		if (processed_tokens[i].line != current_line)
 		{
-			current_line = processed_tokens[i].token.line;
+			current_line = processed_tokens[i].line;
 			printed_line = false;
 			if (printed_first)
 			{
@@ -248,10 +248,10 @@ void print_processed_tokens_by_lines(const std::vector<PROCESSED_TOKEN>& process
 			printed_line = true;
 		}
 		printf("| C%d, TT[%s], TG[%s] \"%s\" ", 
-			processed_tokens[i].token.column, 
+			processed_tokens[i].column, 
 			token_type_map[processed_tokens[i].type].name.c_str(), 
 			token_group_map[processed_tokens[i].group].name.c_str(),
-			processed_tokens[i].token.value.c_str());
+			processed_tokens[i].value.c_str());
 	}
 }
 
@@ -260,9 +260,9 @@ void print_processed_tokens_line_by_line(const std::vector<PROCESSED_TOKEN>& pro
 	for (const PROCESSED_TOKEN& processed_token : processed_tokens)
 	{
 		printf("LINE[%d], COLUMN[%d], TOKEN_TYPE[%s], TOKEN_GROUP[%s], VALUE[%s]\n", 
-			processed_token.token.line, processed_token.token.column,
+			processed_token.line, processed_token.column,
 			token_type_map[processed_token.type].name.c_str(),
 			token_group_map[processed_token.group].name.c_str(),
-			processed_token.token.value.c_str());
+			processed_token.value.c_str());
 	}
 }
