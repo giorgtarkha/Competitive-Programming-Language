@@ -18,7 +18,7 @@ inline bool is_splittable(const char c)
 		   c == '>' || c == '<' || c == '=' ||
 		   c == '?' || c == ':' || 
 		   c == '(' || c == ')' || c == '{' || c == '}'	|| c == '[' || c == ']' ||
-		   c == ',' || c == ';';
+		   c == '.' || c == ',' || c == ';';
 }
 
 inline bool is_valid_identifier_char(const char c)

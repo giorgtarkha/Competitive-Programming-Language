@@ -68,6 +68,7 @@ TOKEN_TYPE get_token_type(const std::string& token_type_str)
 	if (token_type_str == "{") return SC_LBRACE;
 	if (token_type_str == "}") return SC_RBRACE;
 	if (token_type_str == ",") return SP_COMMA;
+	if (token_type_str == ".") return SP_DOT;
 	if (token_type_str == ";") return SP_SEMICOLON;
 	bool have_alph = false, valid_chars = true;
 	for (int i = 0; i < token_type_str.length(); i++)
@@ -91,7 +92,7 @@ TOKEN_TYPE get_token_type(const std::string& token_type_str)
 		{
 			return is_digit(token_type_str[0]) ? TK_UNKNOWN : TK_IDENTIFIER;
 		}
-		return TK_LITERAL;
+		return TK_INTEGER;
 	}
 	return TK_UNKNOWN;
 }
@@ -164,8 +165,10 @@ TOKEN_GROUP get_token_group(const TOKEN_TYPE token_type)
 	if (token_type == SC_LBRACE) return TG_SCOPE;
 	if (token_type == SC_RBRACE) return TG_SCOPE;
 	if (token_type == SP_COMMA) return TG_SEPARATOR;
+	if (token_type == SP_DOT) return TG_SEPARATOR;
 	if (token_type == SP_SEMICOLON) return TG_SEPARATOR;
-	if (token_type == TK_LITERAL) return TG_TOKEN;
+	if (token_type == TK_INTEGER) return TG_TOKEN;
+	if (token_type == TK_FLOAT) return TG_TOKEN;
 	if (token_type == TK_IDENTIFIER) return TG_TOKEN;
 	return TG_UNKNOWN;
 }

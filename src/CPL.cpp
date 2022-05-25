@@ -4,13 +4,22 @@
 #include "Core/Lexer.hpp"
 #include "Core/Parser.hpp"
 
+//TODO behave based on arguments, introduce debug flag, use special logging only when debug flag is active
 int main(int argc, char **argv)
 {
+	
+	printf("Arg Count[%d] -------------------------------------------------\n", argc);
+	for (int i = 0; i < argc; i++)
+	{
+		printf("%s\n", argv[i]);
+	}	
+	printf("---------------------------------------------------------------\n");
 		
 	std::string code = "void main() {\n"
 	 "	int x += 0;\n"
 	 "	int y = 1;\n"
-	 "	print(x + y);\n"
+	 "	int z = 0.5;\n"
+	 "	print(x + y + z);\n"
 	 "}\n";	
 	printf("%s\n", code.c_str());
 	TOKENIZE_RESULT tokenize_result = tokenize(code);

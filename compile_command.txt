@@ -1,2 +1,2 @@
 TODO: temporary, convert into build file (shell/make)
-g++ -std=c++17 src/CPL.cpp src/Core/Tokenizer.cpp src/Core/Lexer.cpp src/Core/Parser.cpp src/Core/Error.cpp src/Core/Token.cpp
+g++ -std=c++17 src/CPL.cpp src/Core/Tokenizer.cpp src/Core/Lexer.cpp src/Core/Parser.cpp src/Core/Error.cpp src/Core/Token.cpp src/Core/AST.cpp src/Core/Compiler.cpp

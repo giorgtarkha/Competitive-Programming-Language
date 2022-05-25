@@ -37,6 +37,8 @@ LEX_RESULT process_tokens(const std::vector<TOKEN>& tokens)
 	return result;	
 }
 
+//TODO Think about subtract token, when to use as subtraction and when to use as negative literal/identifier, 
+//TODO could be done in parser, one solution would be to preceed each subtraction sign with a 0
 LEX_RESULT merge_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_tokens)
 {
 	LEX_RESULT result = {
@@ -83,15 +85,38 @@ LEX_RESULT merge_processed_tokens(const std::vector<PROCESSED_TOKEN>& processed_
 					token_group	
 				});
 			}
+			continue;
 		}
-		else
+
+		if (processed_token.type == TOKEN_TYPE::TK_INTEGER)
 		{
-			if (!with_errors)
+			if (index + 2 < processed_tokens.size() && 
+			    processed_tokens[index + 1].type == TOKEN_TYPE::SP_DOT &&
+			    processed_tokens[index + 2].type == TOKEN_TYPE::TK_INTEGER)
+			{
+				result.processed_tokens.push_back({
+					processed_token.value + processed_tokens[index + 1].value + processed_tokens[index + 2].value,
+					processed_token.line,
+					processed_token.column,
+					TOKEN_TYPE::TK_FLOAT,
+					TOKEN_GROUP::TG_TOKEN
+				});
+				index += 3;
+			}
+			else
 			{
 				result.processed_tokens.push_back(processed_token);
+				index++;
 			}
-			index++;
+			continue;												
 		}
+
+		if (!with_errors)
+		{
+			result.processed_tokens.push_back(processed_token);
+		}
+
+		index++;
 	}
 	return result;
 }
